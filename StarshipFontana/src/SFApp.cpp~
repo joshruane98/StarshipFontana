@@ -10,15 +10,6 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
   auto player_pos = Point2(canvas_w/2, 22);
   player->SetPosition(player_pos);
 
-  const int number_of_aliens = 10;
-  for(int i=0; i<number_of_aliens; i++) {
-    // place an alien at width/number_of_aliens * i
-    auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
-    auto pos   = Point2((canvas_w/number_of_aliens) * i, 200.0f);
-    alien->SetPosition(pos);
-    aliens.push_back(alien);
-  }
-
   auto coin = make_shared<SFAsset>(SFASSET_COIN, sf_window);
   auto coin_pos  = Point2((canvas_w/4), 100);
   coin->SetPosition(coin_pos);
@@ -26,19 +17,31 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
 
   const int walls_per_row = 6;
   const int rows_of_walls = 4;
+  const int aliens_per_row = walls_per_row - 1;
   for (int j=0; j<rows_of_walls; j++) {
-    for(int i=0; i<walls_per_row; i++) {
-      auto wall = make_shared<SFAsset>(SFASSET_WALL, sf_window);
       if (j % 2 == 0) {
-	auto wall_pos = Point2(((canvas_w/walls_per_row) * i) + 64.0f, ((canvas_h/rows_of_walls) * j) + 64.0f);
-	wall->SetPosition(wall_pos);
+	for(int i=0; i<walls_per_row; i++) {
+	  auto wall = make_shared<SFAsset>(SFASSET_WALL, sf_window);
+	  auto wall_pos = Point2(((canvas_w/walls_per_row) * i) + 64.0f, ((canvas_h/rows_of_walls) * j) + 64.0f);
+	  wall->SetPosition(wall_pos);
+	  walls.push_back(wall);
+	}
+	for(int i=0; i<aliens_per_row; i++) {
+	  // place an alien at width/number_of_aliens * i
+	  auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
+	  auto pos   = Point2((canvas_w/aliens_per_row) * i, 200.0f);
+	  alien->SetPosition(pos);
+	  aliens.push_back(alien);
+	}
       }
       else {
-	auto wall_pos = Point2(((canvas_w/walls_per_row) * i) + 32.0f, ((canvas_h/rows_of_walls) * j) + 64.0f);
-	wall->SetPosition(wall_pos);
+	for(int i=0; i<walls_per_row; i++) {
+	  auto wall = make_shared<SFAsset>(SFASSET_WALL, sf_window);
+	  auto wall_pos = Point2(((canvas_w/walls_per_row) * i) + 32.0f, ((canvas_h/rows_of_walls) * j) + 64.0f);
+	  wall->SetPosition(wall_pos);
+	  walls.push_back(wall);
+	}
       }
-      walls.push_back(wall);
-    }
   }
 }
 
