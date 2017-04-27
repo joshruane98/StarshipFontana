@@ -21,6 +21,9 @@ SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type)
   case SFASSET_WALL:
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/wall2.png");
     break;
+  case SFASSET_BACKGROUND:
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/redplanet2.png");
+    break;
   }
 
   if(!sprite) {

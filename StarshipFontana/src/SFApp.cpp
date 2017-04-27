@@ -6,6 +6,8 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
 
   app_box = make_shared<SFBoundingBox>(Vector2(canvas_w, canvas_h), canvas_w, canvas_h);
   score = 0;
+
+  background = make_shared<SFAsset>(SFASSET_BACKGROUND, sf_window);
   player  = make_shared<SFAsset>(SFASSET_PLAYER, sf_window);
   auto player_pos = Point2(canvas_w/2, 22);
   player->SetPosition(player_pos);
@@ -103,8 +105,19 @@ void SFApp::OnUpdateWorld() {
   }
 
   // Update enemy positions
+  enemyMoveCounter++;
   for(auto a : aliens) {
     // do something here
+    if (enemyMoveCounter % 100 == 0) {
+      a->GoEast();
+      a->GoEast();
+      cout << "South";
+    }
+    else if (enemyMoveCounter % 50 == 0){
+      a->GoWest();
+      a->GoWest();
+      cout << "North";
+    }
   }
 
   // Detect collisions
@@ -142,12 +155,15 @@ void SFApp::OnUpdateWorld() {
   }
   aliens.clear();
   aliens = list<shared_ptr<SFAsset>>(tmp);
+
 }
+
 
 void SFApp::OnRender() {
   SDL_RenderClear(sf_window->getRenderer());
 
   // draw the player
+  background->OnRender();
   if(player->IsAlive()) {player->OnRender();}
 
   for(auto p: projectiles) {
@@ -165,6 +181,7 @@ void SFApp::OnRender() {
   for(auto w: walls) {
     w->OnRender();
   }
+  
 
   // Switch the off-screen buffer to be on-screen
   SDL_RenderPresent(sf_window->getRenderer());

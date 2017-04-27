@@ -73,7 +73,7 @@ int main(int arc, char ** argv) {
 
   // Set up top-level timer to UpdateWorld
   // Call the function "display" every delay milliseconds
-  int delay = 1000/30; // 1000 milis in a second, divide by 60 - the framerate
+  int delay = 1000/60; // 1000 milis in a second, divide by 60 - the framerate
   SDL_AddTimer(delay, PushUpdateEvent, NULL);
 
   // Start game loop

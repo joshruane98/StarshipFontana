@@ -19,17 +19,17 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
   const int rows_of_walls = 4;
   const int aliens_per_row = walls_per_row - 1;
   for (int j=0; j<rows_of_walls; j++) {
-      if (j % 2 == 0) {
+      if (j % 2 != 0) {
 	for(int i=0; i<walls_per_row; i++) {
 	  auto wall = make_shared<SFAsset>(SFASSET_WALL, sf_window);
-	  auto wall_pos = Point2(((canvas_w/walls_per_row) * i) + 64.0f, ((canvas_h/rows_of_walls) * j) + 64.0f);
+	  auto wall_pos = Point2(40.0f+((canvas_w/walls_per_row) * i) + ((canvas_w/walls_per_row)/2), 64.0f+((canvas_h/rows_of_walls) * j));
 	  wall->SetPosition(wall_pos);
 	  walls.push_back(wall);
 	}
 	for(int i=0; i<aliens_per_row; i++) {
 	  // place an alien at width/number_of_aliens * i
 	  auto alien = make_shared<SFAsset>(SFASSET_ALIEN, sf_window);
-	  auto pos   = Point2((canvas_w/aliens_per_row) * i, 200.0f);
+	  auto pos   = Point2(40.0f+(canvas_w/walls_per_row) * (i+1), 64.0f+((canvas_h/rows_of_walls) * j));
 	  alien->SetPosition(pos);
 	  aliens.push_back(alien);
 	}
@@ -37,7 +37,7 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
       else {
 	for(int i=0; i<walls_per_row; i++) {
 	  auto wall = make_shared<SFAsset>(SFASSET_WALL, sf_window);
-	  auto wall_pos = Point2(((canvas_w/walls_per_row) * i) + 32.0f, ((canvas_h/rows_of_walls) * j) + 64.0f);
+	  auto wall_pos = Point2(40.0f+(canvas_w/walls_per_row) * i, 64.0f+((canvas_h/rows_of_walls) * j));
 	  wall->SetPosition(wall_pos);
 	  walls.push_back(wall);
 	}
@@ -114,6 +114,7 @@ void SFApp::OnUpdateWorld() {
         p->HandleCollision();
         a->HandleCollision();
 	score++;
+	cout << score;
       }
     }
   }
@@ -148,9 +149,6 @@ void SFApp::OnRender() {
 
   // draw the player
   if(player->IsAlive()) {player->OnRender();}
-  else if(player->IsAlive()==SFASSET_DEAD) {
-    cout << score;
-  }
 
   for(auto p: projectiles) {
     if(p->IsAlive()) {p->OnRender();}
