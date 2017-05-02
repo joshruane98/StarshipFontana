@@ -8,6 +8,11 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
   score = 0;
 
   background = make_shared<SFAsset>(SFASSET_BACKGROUND, sf_window);
+  auto background_pos = Point2(canvas_w/2, canvas_h/2);
+  background->SetPosition(background_pos);
+  winScreen = make_shared<SFAsset>(SFASSET_WINSCREEN, sf_window);
+  auto winScreen_pos = Point2(canvas_w/2, canvas_h/2);
+  winScreen->SetPosition(winScreen_pos);
   player  = make_shared<SFAsset>(SFASSET_PLAYER, sf_window);
   auto player_pos = Point2(canvas_w/2, 22);
   player->SetPosition(player_pos);
@@ -16,6 +21,7 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
   auto coin_pos  = Point2((canvas_w/4), 100);
   coin->SetPosition(coin_pos);
   coins.push_back(coin);
+  coinCollected = false;
 
   const int walls_per_row = 6;
   const int rows_of_walls = 4;
@@ -111,12 +117,10 @@ void SFApp::OnUpdateWorld() {
     if (enemyMoveCounter % 100 == 0) {
       a->GoEast();
       a->GoEast();
-      cout << "South";
     }
     else if (enemyMoveCounter % 50 == 0){
       a->GoWest();
       a->GoWest();
-      cout << "North";
     }
   }
 
@@ -127,7 +131,7 @@ void SFApp::OnUpdateWorld() {
         p->HandleCollision();
         a->HandleCollision();
 	score++;
-	cout << score;
+	cout << score << endl;
       }
     }
   }
@@ -143,6 +147,8 @@ void SFApp::OnUpdateWorld() {
       if(player->CollidesWith(c)) {
 	c->HandleCollision();
 	score += 100;
+	cout << score << endl;
+	coinCollected = true;
       }
     }
 
@@ -156,6 +162,15 @@ void SFApp::OnUpdateWorld() {
   aliens.clear();
   aliens = list<shared_ptr<SFAsset>>(tmp);
 
+  list<shared_ptr<SFAsset>> temp;
+  for(auto p : projectiles) {
+    if(p->IsAlive()) {
+      temp.push_back(p);
+    }
+  }
+  projectiles.clear();
+  projectiles = list<shared_ptr<SFAsset>>(temp);
+
 }
 
 
@@ -163,7 +178,9 @@ void SFApp::OnRender() {
   SDL_RenderClear(sf_window->getRenderer());
 
   // draw the player
+    
   background->OnRender();
+  
   if(player->IsAlive()) {player->OnRender();}
 
   for(auto p: projectiles) {
@@ -181,6 +198,9 @@ void SFApp::OnRender() {
   for(auto w: walls) {
     w->OnRender();
   }
+
+  if (coinCollected == true) {winScreen->OnRender();}
+
   
 
   // Switch the off-screen buffer to be on-screen

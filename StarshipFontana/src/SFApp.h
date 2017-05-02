@@ -39,9 +39,11 @@ private:
   list<shared_ptr<SFAsset> > coins;
   list<shared_ptr<SFAsset> > walls;
   shared_ptr<SFAsset>        background;
+  shared_ptr<SFAsset>        winScreen;
 
   int fire;
   int score;
   int enemyMoveCounter = 0;
+  bool coinCollected;
 };
 #endif

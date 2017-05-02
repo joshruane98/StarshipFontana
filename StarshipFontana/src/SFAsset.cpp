@@ -13,7 +13,7 @@ SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type)
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/projectile.png");
     break;
   case SFASSET_ALIEN:
-    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/alien.png");
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/spaceship.png");
     break;
   case SFASSET_COIN:
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/coin.png");
@@ -22,7 +22,10 @@ SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type)
     sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/wall2.png");
     break;
   case SFASSET_BACKGROUND:
-    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/redplanet2.png");
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/redplanet2_640x480.png");
+    break;
+  case SFASSET_WINSCREEN:
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/winbackground.png");
     break;
   }
 
