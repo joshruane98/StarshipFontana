@@ -21,12 +21,15 @@ class SFApp {
 public:
   SFApp(std::shared_ptr<SFWindow>);
   virtual ~SFApp();
+
+  int     directionShotIn;
+  
   void    OnEvent(SFEvent &);
   int     OnExecute();
   void    OnUpdateWorld();
   void    OnRender();
 
-  void    FireProjectile();
+  void    FireProjectile(int directionShotIn);
 private:
   bool                    is_running;
 
@@ -45,5 +48,6 @@ private:
   int score;
   int enemyMoveCounter = 0;
   bool coinCollected;
+  int directionPlayerFacing = 0;
 };
 #endif

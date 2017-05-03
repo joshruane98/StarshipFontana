@@ -1,7 +1,7 @@
 #include "SFAsset.h"
 
 int SFAsset::SFASSETID=0;
-
+int projectileTraveling = 0;
 SFAsset::SFAsset(SFASSETTYPE type, std::shared_ptr<SFWindow> window): type(type), sf_window(window) {
   this->id   = ++SFASSETID;
 
@@ -140,6 +140,21 @@ void SFAsset::GoSouth() {
   }
 }
 
+void SFAsset::ChangePlayerSprite(int directionFacing) {
+  if (directionFacing == 0) {
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/ship.png");
+  }
+  else if (directionFacing == 1) {
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/ship_right.png");
+  }
+  else if (directionFacing == 2) {
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/ship_down.png");
+  }
+  else if (directionFacing == 3) {
+    sprite = IMG_LoadTexture(sf_window->getRenderer(), "assets/ship_left.png");
+  }
+}
+
 bool SFAsset::CollidesWith(shared_ptr<SFAsset> other) {
   return bbox->CollidesWith(other->bbox);
 }
@@ -166,4 +181,12 @@ void SFAsset::HandleCollision() {
   if(SFASSET_COIN == type) {
     SetNotAlive();
   }
+}
+
+void SFAsset::setDirectionProjectileTraveling(int directionShotIn) {
+  projectileTraveling = directionShotIn;
+}
+
+int SFAsset::returnDirectionProjectileTraveling() {
+  return projectileTraveling;
 }

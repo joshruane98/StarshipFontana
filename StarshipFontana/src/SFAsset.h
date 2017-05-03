@@ -29,6 +29,10 @@ public:
   SFAsset(const SFAsset&);
   virtual ~SFAsset();
 
+  int directionFacing;
+  int directionShotIn;
+  int projectileTraveling;
+
   virtual void      SetPosition(Point2 &);
   virtual Point2    GetPosition();
   virtual SFAssetId GetId();
@@ -40,6 +44,9 @@ public:
   virtual void      SetNotAlive();
   virtual bool      IsAlive();
   virtual void      HandleCollision();
+  virtual void      ChangePlayerSprite(int directionFacing);
+  virtual void      setDirectionProjectileTraveling(int directionShotIn);
+  virtual int      returnDirectionProjectileTraveling();
 
   virtual bool                      CollidesWith(shared_ptr<SFAsset>);
   virtual shared_ptr<SFBoundingBox> GetBoundingBox();

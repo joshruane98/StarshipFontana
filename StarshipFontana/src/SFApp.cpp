@@ -72,19 +72,38 @@ void SFApp::OnEvent(SFEvent& event) {
     break;
   case SFEVENT_PLAYER_LEFT:
     player->GoWest();
+    player->ChangePlayerSprite(3);
+    directionPlayerFacing = 3;
     break;
   case SFEVENT_PLAYER_RIGHT:
     player->GoEast();
+    player->ChangePlayerSprite(1);
+    directionPlayerFacing = 1;
     break;
   case SFEVENT_PLAYER_UP:
     player->GoNorth();
+    player->ChangePlayerSprite(0);
+    directionPlayerFacing = 0;
     break;
   case SFEVENT_PLAYER_DOWN:
     player->GoSouth();
+    player->ChangePlayerSprite(2);
+    directionPlayerFacing = 2;
     break;
   case SFEVENT_FIRE:
     fire ++;
-    FireProjectile();
+    if (directionPlayerFacing == 0) {
+      FireProjectile(0);
+    }
+    else if (directionPlayerFacing == 1) {
+      FireProjectile(1);
+    }
+    else if (directionPlayerFacing == 2) {
+      FireProjectile(2);
+    }
+    else if (directionPlayerFacing == 3) {
+      FireProjectile(3);
+    }
     break;
   }
 }
@@ -103,7 +122,18 @@ int SFApp::OnExecute() {
 void SFApp::OnUpdateWorld() {
   // Update projectile positions
   for(auto p: projectiles) {
-    p->GoNorth();
+    if (p->returnDirectionProjectileTraveling() == 0) {
+      p->GoNorth();
+    }
+    else if (p->returnDirectionProjectileTraveling() == 1) {
+      p->GoEast();
+    }
+    else if (p->returnDirectionProjectileTraveling() == 2) {
+      p->GoSouth();
+    }
+    else if (p->returnDirectionProjectileTraveling() == 3) {
+      p->GoWest();
+    }
   }
 
   for(auto c: coins) {
@@ -113,7 +143,6 @@ void SFApp::OnUpdateWorld() {
   // Update enemy positions
   enemyMoveCounter++;
   for(auto a : aliens) {
-    // do something here
     if (enemyMoveCounter % 100 == 0) {
       a->GoEast();
       a->GoEast();
@@ -148,28 +177,41 @@ void SFApp::OnUpdateWorld() {
 	c->HandleCollision();
 	score += 100;
 	cout << score << endl;
-	coinCollected = true;
+	//coinCollected = true;
       }
     }
 
+  // remove coins
+  list<shared_ptr<SFAsset>> tmpC;
+  for(auto c : coins) {
+    if(c->IsAlive()) {
+      tmpC.push_back(c);
+    }
+  }
+  coins.clear();
+  coins = list<shared_ptr<SFAsset>>(tmpC);
+
   // remove dead aliens (the long way)
-  list<shared_ptr<SFAsset>> tmp;
+  list<shared_ptr<SFAsset>> tmpA;
   for(auto a : aliens) {
     if(a->IsAlive()) {
-      tmp.push_back(a);
+      tmpA.push_back(a);
     }
   }
   aliens.clear();
-  aliens = list<shared_ptr<SFAsset>>(tmp);
+  aliens = list<shared_ptr<SFAsset>>(tmpA);
 
-  list<shared_ptr<SFAsset>> temp;
+  // remove projectiles
+  list<shared_ptr<SFAsset>> tmpP;
   for(auto p : projectiles) {
     if(p->IsAlive()) {
-      temp.push_back(p);
+      tmpP.push_back(p);
     }
   }
   projectiles.clear();
-  projectiles = list<shared_ptr<SFAsset>>(temp);
+  projectiles = list<shared_ptr<SFAsset>>(tmpP);
+
+
 
 }
 
@@ -199,7 +241,7 @@ void SFApp::OnRender() {
     w->OnRender();
   }
 
-  if (coinCollected == true) {winScreen->OnRender();}
+  if (coins.empty()) {winScreen->OnRender();}
 
   
 
@@ -207,9 +249,10 @@ void SFApp::OnRender() {
   SDL_RenderPresent(sf_window->getRenderer());
 }
 
-void SFApp::FireProjectile() {
+void SFApp::FireProjectile(int directionShotIn) {
   auto pb = make_shared<SFAsset>(SFASSET_PROJECTILE, sf_window);
   auto v  = player->GetPosition();
   pb->SetPosition(v);
+  pb->setDirectionProjectileTraveling(directionShotIn);
   projectiles.push_back(pb);
 }
