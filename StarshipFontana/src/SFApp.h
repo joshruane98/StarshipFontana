@@ -43,6 +43,7 @@ private:
   list<shared_ptr<SFAsset> > walls;
   shared_ptr<SFAsset>        background;
   shared_ptr<SFAsset>        winScreen;
+  shared_ptr<SFAsset>        gameover;
 
   int fire;
   int score;

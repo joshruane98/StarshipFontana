@@ -10,6 +10,9 @@ SFApp::SFApp(std::shared_ptr<SFWindow> window) : fire(0), is_running(true), sf_w
   background = make_shared<SFAsset>(SFASSET_BACKGROUND, sf_window);
   auto background_pos = Point2(canvas_w/2, canvas_h/2);
   background->SetPosition(background_pos);
+  gameover = make_shared<SFAsset>(SFASSET_GAMEOVER, sf_window);
+  auto gameover_pos = Point2(canvas_w/2, canvas_h/2);
+  gameover->SetPosition(gameover_pos);
   winScreen = make_shared<SFAsset>(SFASSET_WINSCREEN, sf_window);
   auto winScreen_pos = Point2(canvas_w/2, canvas_h/2);
   winScreen->SetPosition(winScreen_pos);
@@ -242,6 +245,8 @@ void SFApp::OnRender() {
   }
 
   if (coins.empty()) {winScreen->OnRender();}
+
+  if (!(player->IsAlive())) {gameover->OnRender();}
 
   
 
